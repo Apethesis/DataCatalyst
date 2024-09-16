@@ -6,7 +6,8 @@ const { Client, Collection, Events, GatewayIntentBits, REST, Routes } = require(
 const client = new Client({ intents: [GatewayIntentBits.Guilds] }); 
 const sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: 'db.sqlite'
+    storage: 'db.sqlite',
+    logging: false,
 })
 client.commands = new Collection();
 const cmdRegister = []
@@ -45,7 +46,8 @@ const data = {
                 min: 0
             }
         }
-    })
+    }),
+    catalyzed: false
 }
 
 if (fs.existsSync("titles.json")) {
@@ -90,7 +92,7 @@ client.on(Events.InteractionCreate, (interaction) => {
 		return;
 	}
     
-    command.execute(interaction).catch((err) => {
+    command.execute(interaction, data).catch((err) => {
         console.log(err)
         if (interaction.replied || interaction.deferred) {
 			interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
@@ -99,3 +101,5 @@ client.on(Events.InteractionCreate, (interaction) => {
 		}
     })
 });
+
+client.login(process.env.DTOK)
