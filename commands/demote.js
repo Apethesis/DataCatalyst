@@ -7,15 +7,15 @@ function execute(interaction, data) {
             if (user.access >= 3 && interaction.options.getInteger('access') < user.access) {
                 data.userInfo.findAll({ where: { id: interaction.options.getUser('user').id } }).then((usr) => {
                     if (user) {
-                        if (usr.access >= interaction.options.getInteger('access')){
-                            interaction.reply({ "content": `This users access level is above or equal to the one inputted.`, "ephemeral": true })
+                        if (usr.access <= interaction.options.getInteger('access')){
+                            interaction.reply({ "content": `This users access level is below or equal to the one inputted.`, "ephemeral": true })
                         } else {
                             usr.update({ access: interaction.options.getInteger('access') })
                         }
                     } else {
                         data.userInfo.create({ id: interaction.options.getUser('user').id, access: interaction.options.getInteger('access') });
                     }
-                    interaction.reply({ "content": `Promoted user to access level ${interaction.options.getInteger('access')}!`, "ephemeral": true } )
+                    interaction.reply({ "content": `Demoted user to access level ${interaction.options.getInteger('access')}!`, "ephemeral": true } )
                 })
             } else {
                 interaction.reply({ "content": `Your access level is not high enough for this operation.`, "ephemeral": true })
@@ -29,11 +29,11 @@ function execute(interaction, data) {
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('promote')
-        .setDescription('Promotes a user to a certain access level.')
+        .setName('demote')
+        .setDescription('Demotes a user to a certain access level.')
         .addUserOption(option => {
             option.setName('user')
-                .setDescription('The user to promote.')
+                .setDescription('The user to demote.')
         })
         .addIntegerOption(option => {
             option.setName('access')
